@@ -27,3 +27,12 @@ jobs:
 
       - name: Trivy file sca 
         run: trivy fs . > trivyfs.txt
+
+      - name: Docker Build and Push
+        run: |
+           docker -t tic-tak-toe .
+           docker tag tic-tak-toe jagabandhusahoo77/tic-tak.toe:latest
+           docker login -u ${{ secrets.DOCKERHUB_USERNAME }} -p ${{ secrets.DOCKERHUB_TOKEN }}
+           docker push  jagabandhusahoo77/tic-tak.toe:latest
+        env:
+          DOCKER_CLI_ACI: 1
