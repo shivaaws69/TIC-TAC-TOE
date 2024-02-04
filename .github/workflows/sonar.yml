@@ -15,48 +15,17 @@ jobs:
         with:
           fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
 
-      - name: Build and analyze with SonarQube
-        uses: sonarsource/sonarqube-scan-action@master
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
-          
-      - name: NPM Install
-        run: npm install # Add your specific npm install command
-
-      - name: Trivy file scan
-        run: trivy fs . > trivyfs.txt
-
-      - name: Docker Build and Push
-        run: |
-          docker build -t tic-tak-toe .
-          docker tag tic-tak-toe jagabandhusahoo77/tic-tak.toe:latest
-          docker login -u ${{ secrets.DOCKERHUB_USERNAME }} -p ${{ secrets.DOCKERHUB_TOKEN }}
-          docker push jagabandhusahoo77/tic-tak.toe:latest
-        env:
-          DOCKER_CLI_ACI: 1
-
-      - name: image scan
-        run: trivy image jagabandhusahoo77/tic-tak.toe:latest > trivymage.txt
-
-  deploy: 
-    needs: build-analyze-scan
-    runs-on: [self-hosted]
-    steps:
-      - name: docker pull image 
-        run: docker pull jagabandhusahoo77/tic-tak.toe:latest
-
-      - name: image scan 
-        run: trivy image jagabandhusahoo77/tic-tak.toe:latest
 
       - name: Deploy to container
-        run: docker run -d --rm --name game -p 3000:3000 jagabandhusahoo77/tic-tak.toe:latest
+        run: 
+          docker stop game
+          docker rm game 
 
       - name: Update kubeconfig
         run: aws eks --region ap-south-1 update-kubeconfig --name EKS_CLOUD
 
       - name: Deploy to EKS
-        run: kubectl apply -f deployment-service.yml
+        run: kubectl delete -f deployment-service.yml
 
       - name: Send a Slack Notification
         if: always()
