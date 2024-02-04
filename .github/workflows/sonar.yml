@@ -35,3 +35,7 @@ jobs:
            docker push jagabandhusahoo77/tic-tak.toe:latest
         env:
           DOCKER_CLI_ACI: 1
+
+      - name: image scan
+        run: trivy image jagabandhusahoo77/tic-tak.toe:latest > trivymage.txt
+
