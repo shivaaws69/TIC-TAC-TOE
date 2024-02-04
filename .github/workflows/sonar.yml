@@ -1,10 +1,9 @@
-name: Build,Analyze,scan
+name: Build, Analyze, and Scan
 
 on:
   push:
     branches:
       - main
-
 
 jobs:
   build-analyze-scan:
@@ -25,14 +24,14 @@ jobs:
       - name: NPM Install
         run: npm install # Add your specific npm install command
 
-      - name: Trivy file sca 
+      - name: Trivy file scan
         run: trivy fs . > trivyfs.txt
 
       - name: Docker Build and Push
         run: |
-           docker -t tic-tak-toe .
+           docker build -t tic-tak-toe .
            docker tag tic-tak-toe jagabandhusahoo77/tic-tak.toe:latest
            docker login -u ${{ secrets.DOCKERHUB_USERNAME }} -p ${{ secrets.DOCKERHUB_TOKEN }}
-           docker push  jagabandhusahoo77/tic-tak.toe:latest
+           docker push jagabandhusahoo77/tic-tak.toe:latest
         env:
           DOCKER_CLI_ACI: 1
