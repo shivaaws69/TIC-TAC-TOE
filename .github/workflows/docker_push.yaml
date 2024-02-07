@@ -1,0 +1,46 @@
+name: Build and Push Docker Image
+
+on:
+  push:
+    branches:
+      - master
+      
+      
+      
+
+jobs: 
+  build-and-push:
+    runs-on: ubuntu-latest
+
+  
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+  
+    # - name: maven package
+    #   run: |
+    #       mvn clean package
+    #       COMMIT_ID=$(git rev-parse --short=6 HEAD)
+    #       echo "commit id is $COMMIT_ID"
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v1
+ 
+    - name: Build Docker image
+      run: |
+        COMMIT_ID=$(git rev-parse --short=6 HEAD)
+        # echo "commit id is $COMMIT_ID"
+        docker build -t razoropsrepocode/tiktac:V-$COMMIT_ID .
+        # IMAGE_TAG="razoropsrepocode/insure:V-${COMMIT_ID}"
+        # docker build -t "$IMAGE_TAG" . 
+    - name: Login to Docker Hub
+      run: |
+        docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+    
+    - name: Push Docker image
+      run: |
+          COMMIT_ID=$(git rev-parse --short=6 HEAD)
+          # IMAGE_TAG="razoropsrepocode/insure:V-${COMMIT_ID}"
+          # docker push "$IMAGE_TAG"
+          docker push razoropsrepocode/insure:V-$COMMIT_ID
