@@ -43,4 +43,4 @@ jobs:
           COMMIT_ID=$(git rev-parse --short=6 HEAD)
           # IMAGE_TAG="razoropsrepocode/insure:V-${COMMIT_ID}"
           # docker push "$IMAGE_TAG"
-          docker push razoropsrepocode/insure:V-$COMMIT_ID
+          docker push razoropsrepocode/tiktac:V-$COMMIT_ID
