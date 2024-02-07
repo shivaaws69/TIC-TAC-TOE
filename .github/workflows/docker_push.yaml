@@ -30,10 +30,10 @@ jobs:
     - name: Build Docker image
       run: |
         COMMIT_ID=$(git rev-parse --short=6 HEAD)
-        # echo "commit id is $COMMIT_ID"
+        echo "commit id is $COMMIT_ID"
         docker build -t razoropsrepocode/tiktac:V-$COMMIT_ID .
-        # IMAGE_TAG="razoropsrepocode/insure:V-${COMMIT_ID}"
-        # docker build -t "$IMAGE_TAG" . 
+       # IMAGE_TAG="razoropsrepocode/insure:V-${COMMIT_ID}"
+      # docker build -t "$IMAGE_TAG" . 
     - name: Login to Docker Hub
       run: |
         docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
